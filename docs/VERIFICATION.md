@@ -12,9 +12,11 @@ Date: 2026-10-13 (local Mac date)
 | Unit and security tests | PASSED | `npm test`; 8 tests across path guard, policy/process and MCP integration |
 | Build | PASSED | `npm run build` |
 | MCP STDIO smoke | PASSED | `npm run smoke:mcp`; discovered 10 tools, read README and ran harmless `pwd` through MCP |
+| Authenticated HTTP smoke | PASSED | `npm run smoke:http`; loopback health, unauthenticated 401, bearer-authenticated MCP initialize, 10 tools discovered |
 | Dependency audit | PASSED | `npm audit --audit-level=moderate`; 0 vulnerabilities |
 | Codex registration | PASSED | `codex mcp list` reports Elysium enabled; Codex TOML parses; earlier server entries preserved |
 | Codex live call | PASSED | Fresh ephemeral `codex exec` called `get_health` and `list_processes`; returned `READ_ONLY`, `darwin`, relay disabled, 0 sessions |
+| GitHub Actions | PASSED | Public `main` push run completed successfully for commit `b6d21239d0df564a5f5aa9bdffc375ae0a02b128`; check, lint, tests, build, both smoke checks and production dependency audit |
 
 ## REA audit
 
@@ -27,10 +29,27 @@ Date: 2026-10-13 (local Mac date)
 
 | Area | State | Reason |
 |---|---|---|
-| macOS screenshot, Accessibility, UI actions | NOT_EXECUTED | No adapter is implemented; TCC permissions were not probed or requested |
+| macOS screenshot, Accessibility, UI actions through Elysium | NOT_EXECUTED | No adapter is implemented; TCC permissions were not probed or requested |
 | Browser automation | NOT_EXECUTED | Adapter is not implemented |
 | File writes, interactive policy, cancellation | NOT_EXECUTED | Not exposed by the READ_ONLY MVP |
-| Elysium remote gateway, relay, pairing and ChatGPT connector | NOT_EXECUTED | No Elysium remote service is implemented or deployed; the registered vendor Remote Desktop Commander remains separate |
-| Remote end-to-end acceptance | BLOCKED | Requires Elysium gateway, identity, TLS/domain and explicit deployment/infrastructure decisions |
+| Elysium remote gateway, OAuth, relay, device pairing and revocation | NOT_EXECUTED | The new Elysium HTTP transport is local loopback only; no identity service or public gateway is deployed |
+| Elysium macOS desktop control | NOT_EXECUTED | The Elysium MVP has no screenshot, Accessibility, or UI-control adapter |
+| Elysium public remote acceptance | BLOCKED | Requires OAuth identity, outbound relay, TLS/domain and infrastructure decisions |
 
-The separate vendor Desktop Commander remote agent was observed running after verification; it is not Elysium remote capability evidence.
+## Existing vendor Remote Desktop Commander (separate from Elysium)
+
+| Check | Result | Evidence |
+|---|---|---|
+| Remote Device process | PASSED | Existing `desktop-commander remote` process remained active; it was not restarted or stopped |
+| Device registration | PASSED | Official device dashboard showed `MacBook-Air-de-Jorge.local` as Online |
+| ChatGPT read call | PASSED | ChatGPT's Remote Desktop Commander app returned the paired agent's working directory; the private path is omitted from this public record |
+| ChatGPT file write | PASSED | Created `/tmp/elysium-remote-mcp-write-test.txt` with a test marker; verified the exact contents locally; removed the temporary file |
+| ChatGPT code execution | PASSED | Remote `node -p '6 * 7'` returned `42` |
+| Gemini web app | PASSED | Added the custom MCP app; Gemini listed 31 actions and returned the paired device Online on macOS in a read-only request |
+| Codex CLI | PASSED | OAuth completed; a fresh ephemeral call to remote `who_am_i` reported one paired device |
+| Gemini CLI | CONFIGURED, NOT CONNECTED | User-scope endpoint is present, but CLI login requires a valid Google Cloud project environment setting; no project or billing resource was created |
+| Antigravity | CONFIGURED, AUTH PENDING | Endpoint was added to the existing global MCP profile while preserving its servers; OAuth needs the app window, and macOS was locked during this attempt |
+| Claude Code | CONFIGURED, AUTH NOT STARTED | Endpoint is registered; the installed CLI lacks the documented shell login command. Official setup lists Anthropic Console billing or a Pro/Max plan for Claude Code, so no paid authentication was started |
+| OpenCode | NOT CONFIGURED | Its existing user config fails schema validation on unrelated provider keys; it was left untouched to preserve the profile |
+
+The existing vendor connector is verified for remote read/write/terminal use from ChatGPT. Gemini web and Codex CLI were verified with read-only calls. Its Remote Device agent and hosted service are separate from this open-source Elysium implementation. No screen capture or GUI-control action was used in this verification.
