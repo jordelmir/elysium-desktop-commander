@@ -45,11 +45,12 @@ Date: 2026-10-13 (local Mac date)
 | ChatGPT read call | PASSED | ChatGPT's Remote Desktop Commander app returned the paired agent's working directory; the private path is omitted from this public record |
 | ChatGPT file write | PASSED | Created `/tmp/elysium-remote-mcp-write-test.txt` with a test marker; verified the exact contents locally; removed the temporary file |
 | ChatGPT code execution | PASSED | Remote `node -p '6 * 7'` returned `42` |
-| Gemini web app | PASSED | Added the custom MCP app; Gemini listed 31 actions and returned the paired device Online on macOS in a read-only request |
+| Gemini web app | PASSED | Added the custom MCP app; Gemini listed 31 actions, returned the paired device Online on macOS, and ran `node -p '6 * 7'` with explicit tool approval, returning `42` |
 | Codex CLI | PASSED | OAuth completed; a fresh ephemeral call to remote `who_am_i` reported one paired device |
 | Gemini CLI | CONFIGURED, NOT CONNECTED | User-scope endpoint is present, but CLI login requires a valid Google Cloud project environment setting; no project or billing resource was created |
 | Antigravity | CONFIGURED, AUTH PENDING | Endpoint was added to the existing global MCP profile while preserving its servers; OAuth needs the app window, and macOS was locked during this attempt |
-| Claude Code | CONFIGURED, AUTH NOT STARTED | Endpoint is registered; the installed CLI lacks the documented shell login command. Official setup lists Anthropic Console billing or a Pro/Max plan for Claude Code, so no paid authentication was started |
+| Claude Code | NOT CONNECTED | Endpoint is registered; official pricing places Claude Code on Pro/Max, so no plan upgrade or API billing was started |
+| Claude web | AUTH PENDING | Current official help allows one custom connector on Free, but the browser is signed out; sign-in/account creation was not attempted |
 | OpenCode | NOT CONFIGURED | Its existing user config fails schema validation on unrelated provider keys; it was left untouched to preserve the profile |
 
 The existing vendor connector is verified for remote read/write/terminal use from ChatGPT. Gemini web and Codex CLI were verified with read-only calls. Its Remote Device agent and hosted service are separate from this open-source Elysium implementation. No screen capture or GUI-control action was used in this verification.
